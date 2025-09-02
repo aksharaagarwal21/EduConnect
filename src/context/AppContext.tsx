@@ -1,5 +1,11 @@
 import React, { createContext, useContext, useReducer, useEffect } from 'react';
 
+interface User {
+  id: string;
+  email: string;
+  name: string;
+}
+
 interface UserProfile {
   grade: number;
   subjects: string[];
@@ -41,6 +47,8 @@ interface QuizAttempt {
 }
 
 interface AppState {
+  user: User | null;
+  isAuthenticated: boolean;
   userProfile: UserProfile | null;
   studyMaterials: StudyMaterial[];
   quizzes: Quiz[];
@@ -50,7 +58,10 @@ interface AppState {
 }
 
 type AppAction =
+  | { type: 'SET_USER'; payload: User }
+  | { type: 'LOGOUT' }
   | { type: 'SET_USER_PROFILE'; payload: UserProfile }
+  | { type: 'RESET_PROFILE' }
   | { type: 'TOGGLE_BOOKMARK'; payload: string }
   | { type: 'ADD_QUIZ_ATTEMPT'; payload: QuizAttempt }
   | { type: 'SET_LANGUAGE'; payload: string }
@@ -62,6 +73,8 @@ const AppContext = createContext<{
 } | null>(null);
 
 const initialState: AppState = {
+  user: null,
+  isAuthenticated: false,
   userProfile: null,
   studyMaterials: [],
   quizzes: [],
@@ -72,8 +85,14 @@ const initialState: AppState = {
 
 function appReducer(state: AppState, action: AppAction): AppState {
   switch (action.type) {
+    case 'SET_USER':
+      return { ...state, user: action.payload, isAuthenticated: true };
+    case 'LOGOUT':
+      return { ...initialState, currentLanguage: state.currentLanguage };
     case 'SET_USER_PROFILE':
       return { ...state, userProfile: action.payload };
+    case 'RESET_PROFILE':
+      return { ...state, userProfile: null };
     case 'TOGGLE_BOOKMARK':
       const isBookmarked = state.bookmarks.includes(action.payload);
       return {
@@ -101,7 +120,18 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     // Load data from localStorage
+    const authData = localStorage.getItem('educonnect_auth');
     const savedData = localStorage.getItem('educonnect_data');
+    
+    if (authData) {
+      try {
+        const user = JSON.parse(authData);
+        dispatch({ type: 'SET_USER', payload: user });
+      } catch (error) {
+        console.error('Error loading auth data:', error);
+      }
+    }
+    
     if (savedData) {
       try {
         const parsedData = JSON.parse(savedData);
@@ -114,6 +144,12 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     // Save data to localStorage
+    if (state.user) {
+      localStorage.setItem('educonnect_auth', JSON.stringify(state.user));
+    } else {
+      localStorage.removeItem('educonnect_auth');
+    }
+    
     localStorage.setItem('educonnect_data', JSON.stringify(state));
   }, [state]);
 

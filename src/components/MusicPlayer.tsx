@@ -63,19 +63,19 @@ export default function MusicPlayer() {
 
   if (!isExpanded) {
     return (
-      <div className="fixed top-16 right-4 z-40">
+      <div className="fixed top-20 left-4 z-40">
         <button
           onClick={() => setIsExpanded(true)}
-          className="p-3 bg-emerald-500 rounded-full shadow-lg hover:bg-emerald-600 transition-all transform hover:scale-105"
+          className="p-2 bg-emerald-500 rounded-full shadow-lg hover:bg-emerald-600 transition-all transform hover:scale-105"
         >
-          <Music className="w-5 h-5 text-white" />
+          <Music className="w-4 h-4 text-white" />
         </button>
       </div>
     );
   }
 
   return (
-    <div className="fixed top-16 left-4 right-4 z-40 bg-gray-800 rounded-xl p-4 shadow-lg border border-gray-700">
+    <div className="fixed top-20 left-4 right-4 z-40 bg-gray-800 rounded-xl p-4 shadow-lg border border-gray-700">
       <div className="flex items-center gap-4">
         {/* Album Art */}
         <div className="w-12 h-12 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-lg flex items-center justify-center">

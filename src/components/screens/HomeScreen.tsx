@@ -1,7 +1,7 @@
 import React from 'react';
 import { Calculator, Microscope, Globe, BookOpen, Settings } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
-import LanguageSelector from '../LanguageSelector';
+import UserMenu from '../UserMenu';
 import { translations } from '../../utils/translations';
 
 const subjectIcons = {
@@ -28,7 +28,7 @@ interface HomeScreenProps {
 
 export default function HomeScreen({ onNavigateToStudy }: HomeScreenProps) {
   const { state } = useApp();
-  const [showLanguageSelector, setShowLanguageSelector] = React.useState(false);
+  const [showUserMenu, setShowUserMenu] = React.useState(false);
   
   const t = translations[state.currentLanguage] || translations.en;
   const userSubjects = state.userProfile?.subjects || [];
@@ -42,7 +42,7 @@ export default function HomeScreen({ onNavigateToStudy }: HomeScreenProps) {
           <p className="text-gray-400">{t.gradeLevel} {state.userProfile?.grade}</p>
         </div>
         <button
-          onClick={() => setShowLanguageSelector(true)}
+          onClick={() => setShowUserMenu(true)}
           className="p-2 rounded-lg bg-gray-800 hover:bg-gray-700 transition-colors"
         >
           <Settings className="w-5 h-5" />
@@ -100,9 +100,9 @@ export default function HomeScreen({ onNavigateToStudy }: HomeScreenProps) {
         </div>
       </div>
 
-      {/* Language Selector Modal */}
-      {showLanguageSelector && (
-        <LanguageSelector onClose={() => setShowLanguageSelector(false)} />
+      {/* User Menu Modal */}
+      {showUserMenu && (
+        <UserMenu onClose={() => setShowUserMenu(false)} />
       )}
     </div>
   );
